@@ -1333,7 +1333,9 @@ const
   sLibAprDll = 'libapr-1.dll';
 
 type
-  EAprError = class(Exception)
+  ENonAIRException = class(Exception);
+  
+  EAprError = class(ENonAIRException)
   private
     FErrorCode: TAprStatus;
   public

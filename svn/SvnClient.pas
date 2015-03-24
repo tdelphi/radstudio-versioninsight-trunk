@@ -720,7 +720,7 @@ type
     procedure Update(PathNames: TStrings; Callback: TSvnNotifyCallback = nil; Recurse: Boolean = True;
       IgnoreExternals: Boolean = False; ConflictCallBack: TSvnConflictCallback = nil;
       SvnCancelCallback: TSvnCancelCallback = nil; SubPool: PAprPool = nil);
-
+    function SvnPathIsUrl(const PathName: string): Boolean;
     property Allocator: PAprAllocator read FAllocator;
     property BlameOptions: TSvnBlameOptions read FBlameOptions;
     property ConfigDir: string read FConfigDir;
@@ -1069,7 +1069,14 @@ const
     SWcNotifyChangelistSet, SWcNotifyChangelistClear, SWcNotifyChangelistMoved, SWcNotifyMergeBegin,
     SWcNotifyForeignMergeBegin, SWcNotifyUpdateReplace, SWcNotifyPropertyAdded, SWcNotifyPropertyModified,
     SWcNotifyPropertyDeleted, SWcNotifyPropertyDeletedNonexistent, SWcNotifyRevpropSet, SWcNotifyRevpropDeleted,
-    SWcNotifyMergeCompleted, SWcNotifyTreeConflict, SWcNotifyFailedExternal);
+    SWcNotifyMergeCompleted, SWcNotifyTreeConflict, SWcNotifyFailedExternal, sWcNotifyUpdateStarted,
+    sWcNotifyUpdateSkipObstruction, sWcNotifyUpdateSkipWorkingOnly, sWcNotifyUpdateSkipAccessDenied,
+    sWcNotifyUpdateExternalRemoved, sWcNotifyUpdateShadowedAdd, sWcNotifyUpdateShadowedUpdate,
+    sWcNotifyUpdateShadowedDelete, sWcNotifyMergeRecordInfo, sWcNotifyUpgradedPath, sWcNotifyMergeRecordInfoBegin,
+    sWcNotifyMergeElideInfo, sWcNotifyPatch, sWcNotifyPatchAppliedHunk, sWcNotifyPatchRejectedHunk,
+    sWcNotifyPatchHunkAlreadyApplied, sWcNotifyCommitCopied, sWcNotifyCommitCopiedReplaced, sWcNotifyUrlRedirect,
+    sWcNotifyPathNonexistent, sWcNotifyExclude, sWcNotifyFailedConflict, sWcNotifyFailedMissing, sWcNotifyFailedOutOfDate,
+    sWcNotifyFailedNoParent, sWcNotifyFailedLocked, sWcNotifyFailedForbiddenbyServer, sWcNotifySkipConflicted);
 begin
   Result := NotifyActionStrings[Action];
 end;
@@ -4952,6 +4959,11 @@ begin
   end;
 end;
 
+function TSvnClient.SvnPathIsUrl(const PathName: string): Boolean;
+begin
+  Result := svn_path_is_url(PAnsiChar(UTF8Encode(PathName)));
+end;
+
 function TSvnClient.SvnPathToNativePath(const SvnPath: string; SubPool: PAprPool = nil): string;
 var
   NewPool: Boolean;
@@ -5157,7 +5169,7 @@ begin
         EncodedURL := svn_path_uri_encode(PAnsiChar(UTF8Encode(FSvnItem.URL)), SubPool);
         SL := TStringList.Create;
         try
-          SL.Add(EncodedURL);
+          SL.Add(string(EncodedURL));
           Targets := FSvnItem.SvnClient.StringListToAprArray(SL, SubPool);
         finally
           SL.Free;

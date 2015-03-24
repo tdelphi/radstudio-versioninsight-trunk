@@ -47,6 +47,8 @@ type
   end;
 
   TParentCleanSvnMenu = class(TSvnMenu)
+  protected
+    function GetImageIndex: Integer; override;
   public
     constructor Create;
   end;
@@ -61,16 +63,24 @@ type
     constructor Create(ASvnIDEClient: TSvnIDEClient);
   end;
 
+  TDirCleanSvnMenu = class(TBaseCleanSvnMenu)
+  protected
+    function GetImageIndex: Integer; override;
+  public
+    constructor Create(ASvnIDEClient: TSvnIDEClient);
+  end;
+
 procedure DoClean(const SvnClient: TSvnClient; const DirectoryList: TStringList);
 
 implementation
 
-uses SysUtils, SvnIDEConst, ToolsApi, Controls, Forms;
+uses SysUtils, SvnIDEConst, ToolsApi, Controls, Forms, SvnIDEIcons;
 
 const
   sPMVCleanParent = 'SvnCleanParent';
   sPMVRootDirClean = 'RootDirClean';
   sPMVProjectDirClean = 'ProjectDirClean';
+  sPMVDirClean = 'DirClean';
 
 { TBaseCleanSvnMenu }
 
@@ -142,6 +152,11 @@ begin
   FHelpContext := 0;
 end;
 
+function TParentCleanSvnMenu.GetImageIndex: Integer;
+begin
+  Result := CleanImageIndex;
+end;
+
 { TRootDirCleanSvnMenu }
 
 constructor TRootDirCleanSvnMenu.Create(ASvnIDEClient: TSvnIDEClient);
@@ -164,6 +179,24 @@ begin
   FVerb := sPMVProjectDirClean;
   FPosition := pmmpProjectDirCleanSvnMenu;
   FHelpContext := 0;
+end;
+
+{ TDirCleanSvnMenu }
+
+constructor TDirCleanSvnMenu.Create(ASvnIDEClient: TSvnIDEClient);
+begin
+  inherited Create(ASvnIDEClient);
+  FRootType := rtDir;
+  FParent := sPMVSvnParent;
+  FCaption := sPMMClean;
+  FVerb := sPMVDirClean;
+  FPosition := pmmpProjectDirCleanSvnMenu;
+  FHelpContext := 0;
+end;
+
+function TDirCleanSvnMenu.GetImageIndex: Integer;
+begin
+  Result := CleanImageIndex;
 end;
 
 end.

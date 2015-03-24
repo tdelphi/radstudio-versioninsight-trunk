@@ -3,12 +3,17 @@ object SvnOptionsFrame: TSvnOptionsFrame
   Top = 0
   Width = 465
   Height = 469
+  HelpContext = 15212
   TabOrder = 0
+  DesignSize = (
+    465
+    469)
   object GroupBox1: TGroupBox
     Left = 8
     Top = 8
-    Width = 305
+    Width = 441
     Height = 193
+    Anchors = [akLeft, akTop, akRight]
     Caption = ' Colors '
     TabOrder = 0
     object Label1: TLabel
@@ -103,22 +108,39 @@ object SvnOptionsFrame: TSvnOptionsFrame
   object GroupBox2: TGroupBox
     Left = 8
     Top = 207
-    Width = 305
+    Width = 441
     Height = 122
+    Anchors = [akLeft, akTop, akRight]
     Caption = ' Options '
     TabOrder = 1
     object cbDeleteBackupFilesAfterCommit: TCheckBox
       Left = 5
       Top = 22
-      Width = 172
+      Width = 412
       Height = 17
       Caption = 'Delete backup files after commit'
       TabOrder = 0
     end
+    object cbAlternativeCommitLayout: TCheckBox
+      Left = 5
+      Top = 46
+      Width = 412
+      Height = 17
+      Caption = 'Alternative Commit Layout'
+      TabOrder = 1
+    end
+    object cbClearFileStatesAfterCloseAll: TCheckBox
+      Left = 5
+      Top = 70
+      Width = 412
+      Height = 17
+      Caption = 'Clear file states after Close All'
+      TabOrder = 2
+    end
     object cbKeepCommitViewOpenAfterCommit: TCheckBox
       Left = 5
       Top = 94
-      Width = 212
+      Width = 412
       Height = 17
       Caption = 'Keep Commit View open after commit'
       TabOrder = 3
@@ -127,14 +149,15 @@ object SvnOptionsFrame: TSvnOptionsFrame
   object GroupBox5: TGroupBox
     Left = 8
     Top = 335
-    Width = 305
+    Width = 441
     Height = 122
+    Anchors = [akLeft, akTop, akRight]
     Caption = ' Blame : Diff options '
     TabOrder = 2
     object IgnoreEOL: TCheckBox
       Left = 5
       Top = 22
-      Width = 113
+      Width = 412
       Height = 17
       Caption = 'Ignore line &endings'
       TabOrder = 0
@@ -142,7 +165,7 @@ object SvnOptionsFrame: TSvnOptionsFrame
     object CompareSpace: TRadioButton
       Left = 5
       Top = 53
-      Width = 145
+      Width = 412
       Height = 17
       Caption = '&Compare whitespaces'
       Checked = True
@@ -152,7 +175,7 @@ object SvnOptionsFrame: TSvnOptionsFrame
     object IgnoreSpace: TRadioButton
       Left = 5
       Top = 76
-      Width = 161
+      Width = 412
       Height = 17
       Caption = 'Ignore whitespace c&hanges'
       TabOrder = 2
@@ -160,7 +183,7 @@ object SvnOptionsFrame: TSvnOptionsFrame
     object IgnoreAllSpace: TRadioButton
       Left = 5
       Top = 99
-      Width = 145
+      Width = 412
       Height = 17
       Caption = 'I&gnore all whitespaces'
       TabOrder = 3

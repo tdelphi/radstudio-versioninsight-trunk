@@ -2765,7 +2765,36 @@ type
     svnWcNotifyRevpropDeleted,
     svnWcNotifyMergeCompleted,
     svnWcNotifyTreeConflict,
-    svnWcNotifyFailedExternal
+    svnWcNotifyFailedExternal,
+    //Subversion 1.7 and higher
+    svnWcNotifyUpdateStarted,
+    svnWcNotifyUpdateSkipObstruction,
+    svnWcNotifyUpdateSkipWorkingOnly,
+    svnWcNotifyUpdateSkipAccessDenied,
+    svnWcNotifyUpdateExternalRemoved,
+    svnWcNotifyUpdateShadowedAdd,
+    svnWcNotifyUpdateShadowedUpdate,
+    svnWcNotifyUpdateShadowedDelete,
+    svnWcNotifyMergeRecordInfo,
+    svnWcNotifyUpgradedPath,
+    svnWcNotifyMergeRecordInfoBegin,
+    svnWcNotifyMergeElideInfo,
+    svnWcNotifyPatch,
+    svnWcNotifyPatchAppliedHunk,
+    svnWcNotifyPatchRejectedHunk,
+    svnWcNotifyPatchHunkAlreadyApplied,
+    svnWcNotifyCommitCopied,
+    svnWcNotifyCommitCopiedReplaced,
+    svnWcNotifyUrlRedirect,
+    svnWcNotifyPathNonexistent,
+    svnWcNotifyExclude,
+    svnWcNotifyFailedConflict,
+    svnWcNotifyFailedMissing,
+    svnWcNotifyFailedOutOfDate,
+    svnWcNotifyFailedNoParent,
+    svnWcNotifyFailedLocked,
+    svnWcNotifyFailedForbiddenbyServer,
+    svnWcNotifySkipConflicted
   );
   PSvnWcNotifyState = ^TSvnWcNotifyState;
   TSvnWcNotifyState = (

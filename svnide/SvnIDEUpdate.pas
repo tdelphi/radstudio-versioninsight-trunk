@@ -51,6 +51,8 @@ type
   end;
 
   TParentUpdateSvnMenu = class(TSvnMenu)
+  protected
+    function GetImageIndex: Integer; override;
   public
     constructor Create;
   end;
@@ -71,6 +73,15 @@ type
   end;
 
   TFileUpdateSvnMenu = class(TBaseUpdateSvnMenu)
+  protected
+    function GetImageIndex: Integer; override;
+  public
+    constructor Create(ASvnIDEClient: TSvnIDEClient);
+  end;
+
+  TDirUpdateSvnMenu = class(TBaseUpdateSvnMenu)
+  protected
+    function GetImageIndex: Integer; override;
   public
     constructor Create(ASvnIDEClient: TSvnIDEClient);
   end;
@@ -85,7 +96,8 @@ implementation
 
 uses Forms, Controls, Windows, SvnIDEConst, SysUtils, SvnIDEMessageView,
   SvnClientConflict, ActiveX, IStreams, SvnClientUpdate, svnconst,
-  Generics.Defaults, Generics.Collections, SvnUIUtils, SvnIDEUtils, Graphics;
+  Generics.Defaults, Generics.Collections, SvnUIUtils, SvnIDEUtils, Graphics,
+  SvnIDEIcons;
 
 const
   sPMVUpdate = 'Update';
@@ -93,6 +105,7 @@ const
   sPMVUpdateRootDir = 'UpdateRootDir';
   sPMVUpdateProjectDir = 'UpdateProjectDir';
   sPMVUpdateExpicitFiles = 'UpdateExpicitFiles';
+  sPMVUpdateDir = 'UpdateDir';
 
 type
   TUpdateThread = class(TThread)
@@ -292,6 +305,11 @@ begin
   FHelpContext := 0;
 end;
 
+function TParentUpdateSvnMenu.GetImageIndex: Integer;
+begin
+  Result := UpdateImageIndex;
+end;
+
 { TRootDirUpdateSvnMenu }
 
 constructor TRootDirUpdateSvnMenu.Create(ASvnIDEClient: TSvnIDEClient);
@@ -342,6 +360,29 @@ begin
   FVerb := sPMVUpdate;
   FPosition := pmmpFileUpdateSvnMenu;
   FHelpContext := 0;
+end;
+
+function TFileUpdateSvnMenu.GetImageIndex: Integer;
+begin
+  Result := UpdateImageIndex;
+end;
+
+{ TDirUpdateSvnMenu }
+
+constructor TDirUpdateSvnMenu.Create(ASvnIDEClient: TSvnIDEClient);
+begin
+  inherited Create(ASvnIDEClient);
+  FRootType := rtDir;
+  FParent := sPMVSvnParent;
+  FCaption := sPMMUpdate;
+  FVerb := sPMVUpdateDir;
+  FPosition := pmmpFileUpdateSvnMenu;
+  FHelpContext := 0;
+end;
+
+function TDirUpdateSvnMenu.GetImageIndex: Integer;
+begin
+  Result := UpdateImageIndex;
 end;
 
 { TUpdateThread }

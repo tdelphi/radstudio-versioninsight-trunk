@@ -63,7 +63,7 @@ object SvnMergeDialog: TSvnMergeDialog
     Top = 0
     Width = 544
     Height = 310
-    ActivePage = tsMergeType
+    ActivePage = tsMergeOptions
     Align = alClient
     Style = tsFlatButtons
     TabOrder = 1
@@ -100,7 +100,7 @@ object SvnMergeDialog: TSvnMergeDialog
         object RadioButton1: TRadioButton
           Left = 10
           Top = 24
-          Width = 169
+          Width = 287
           Height = 17
           Caption = 'Merge a &range of revisions'
           Checked = True
@@ -110,7 +110,7 @@ object SvnMergeDialog: TSvnMergeDialog
         object RadioButton2: TRadioButton
           Left = 10
           Top = 120
-          Width = 121
+          Width = 287
           Height = 17
           Caption = 'R&eintegrate a branch'
           Enabled = False
@@ -119,7 +119,7 @@ object SvnMergeDialog: TSvnMergeDialog
         object RadioButton3: TRadioButton
           Left = 10
           Top = 208
-          Width = 145
+          Width = 287
           Height = 17
           Caption = 'Merge two different &trees'
           Enabled = False
@@ -193,7 +193,7 @@ object SvnMergeDialog: TSvnMergeDialog
         object Revisions: TEdit
           Left = 10
           Top = 20
-          Width = 416
+          Width = 350
           Height = 21
           Anchors = [akLeft, akTop, akRight]
           TabOrder = 0
@@ -207,9 +207,9 @@ object SvnMergeDialog: TSvnMergeDialog
           TabOrder = 1
         end
         object btnURLLog: TButton
-          Left = 432
+          Left = 366
           Top = 18
-          Width = 79
+          Width = 145
           Height = 25
           Anchors = [akTop, akRight]
           Caption = 'Show &Log'
@@ -225,6 +225,9 @@ object SvnMergeDialog: TSvnMergeDialog
         Anchors = [akLeft, akTop, akRight]
         Caption = ' Working Copy '
         TabOrder = 2
+        DesignSize = (
+          522
+          58)
         object WCDir: TLabel
           Left = 10
           Top = 24
@@ -233,9 +236,9 @@ object SvnMergeDialog: TSvnMergeDialog
           Caption = 'WCDir'
         end
         object btnWCLog: TButton
-          Left = 431
+          Left = 366
           Top = 16
-          Width = 79
+          Width = 144
           Height = 25
           Anchors = [akTop, akRight]
           Caption = 'Show L&og'
@@ -272,7 +275,7 @@ object SvnMergeDialog: TSvnMergeDialog
         object IgnoreAncestry: TCheckBox
           Left = 10
           Top = 56
-          Width = 97
+          Width = 255
           Height = 17
           Caption = 'Ignore &ancestry'
           TabOrder = 0
@@ -280,7 +283,7 @@ object SvnMergeDialog: TSvnMergeDialog
         object IgnoreEOL: TCheckBox
           Left = 10
           Top = 79
-          Width = 113
+          Width = 255
           Height = 17
           Caption = 'Ignore line &endings'
           TabOrder = 1
@@ -288,7 +291,7 @@ object SvnMergeDialog: TSvnMergeDialog
         object RadioButton4: TRadioButton
           Left = 10
           Top = 110
-          Width = 145
+          Width = 255
           Height = 17
           Caption = '&Compare whitespaces'
           Checked = True
@@ -298,7 +301,7 @@ object SvnMergeDialog: TSvnMergeDialog
         object IgnoreSpace: TRadioButton
           Left = 10
           Top = 133
-          Width = 161
+          Width = 255
           Height = 17
           Caption = 'Ignore whitespace c&hanges'
           TabOrder = 3
@@ -306,15 +309,15 @@ object SvnMergeDialog: TSvnMergeDialog
         object IgnoreAllSpace: TRadioButton
           Left = 10
           Top = 156
-          Width = 145
+          Width = 255
           Height = 17
           Caption = 'I&gnore all whitespaces'
           TabOrder = 4
         end
         object Depth: TComboBox
-          Left = 296
+          Left = 248
           Top = 21
-          Width = 215
+          Width = 263
           Height = 21
           Style = csDropDownList
           Anchors = [akLeft, akTop, akRight]
@@ -332,7 +335,7 @@ object SvnMergeDialog: TSvnMergeDialog
       object Force: TCheckBox
         Left = 17
         Top = 199
-        Width = 97
+        Width = 255
         Height = 17
         Hint = 'Discards local changes upon incoming deletes'
         Caption = 'F&orce the merge'
@@ -341,7 +344,7 @@ object SvnMergeDialog: TSvnMergeDialog
       object RecordOnly: TCheckBox
         Left = 17
         Top = 222
-        Width = 318
+        Width = 431
         Height = 17
         Hint = 
           'Marks the revisions as merged, without actually doing the merge.' +
@@ -350,9 +353,9 @@ object SvnMergeDialog: TSvnMergeDialog
         TabOrder = 2
       end
       object Button1: TButton
-        Left = 454
+        Left = 373
         Top = 272
-        Width = 75
+        Width = 156
         Height = 25
         Anchors = [akRight, akBottom]
         Caption = '&Test merge'

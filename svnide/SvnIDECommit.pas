@@ -47,6 +47,8 @@ type
   end;
 
   TParentCommitSvnMenu = class(TSvnMenu)
+  protected
+    function GetImageIndex: Integer; override;
   public
     constructor Create;
   end;
@@ -67,6 +69,15 @@ type
   end;
 
   TFileCommitSvnMenu = class(TBaseCommitSvnMenu)
+  protected
+    function GetImageIndex: Integer; override;
+  public
+    constructor Create(ASvnIDEClient: TSvnIDEClient);
+  end;
+
+  TDirCommitSvnMenu = class(TBaseCommitSvnMenu)
+  protected
+    function GetImageIndex: Integer; override;
   public
     constructor Create(ASvnIDEClient: TSvnIDEClient);
   end;
@@ -85,7 +96,7 @@ implementation
 uses SysUtils, ToolsApi, Forms, DesignIntf, ComCtrls, Controls, SvnIDEConst,
   SvnClientCommitFrame, svn_client, FileHistoryAPI, IStreams,
   ActiveX, Dialogs, SvnIDEClean, SvnIDEMessageView, Registry, SvnUITypes,
-  SvnIDEUtils, Graphics, IOUtils, Types;
+  SvnIDEUtils, Graphics, IOUtils, Types, SvnIDEIcons, SvnIDEFileStates;
 
 const
   sPMVCommit = 'Commit';
@@ -94,6 +105,7 @@ const
   sPMVRootDirCommit = 'RootDirCommit';
   sPMVProjectDirCommit = 'ProjectDirCommit';
   sPMVExpicitFilesCommit = 'ExpicitFilesCommit';
+  sPMVDirCommit = 'DirCommit';
   sSubversion = 'Subversion';
   sRecentComments = 'RecentComments';
   sComment = 'Comment%d';
@@ -207,6 +219,11 @@ begin
   FHelpContext := 0;
 end;
 
+function TParentCommitSvnMenu.GetImageIndex: Integer;
+begin
+  Result := CommitImageIndex;
+end;
+
 { TRootDirCommitSvnMenu }
 
 constructor TRootDirCommitSvnMenu.Create(ASvnIDEClient: TSvnIDEClient);
@@ -259,6 +276,29 @@ begin
   FHelpContext := 0;
 end;
 
+function TFileCommitSvnMenu.GetImageIndex: Integer;
+begin
+  Result := CommitImageIndex;
+end;
+
+{ TDirCommitSvnMenu }
+
+constructor TDirCommitSvnMenu.Create(ASvnIDEClient: TSvnIDEClient);
+begin
+  inherited Create(ASvnIDEClient);
+  FRootType := rtDir;
+  FParent := sPMVSvnParent;
+  FCaption := sPMMCommit;
+  FVerb := sPMVDirCommit;
+  FPosition := pmmpFileCommitSvnMenu;
+  FHelpContext := 0;
+end;
+
+function TDirCommitSvnMenu.GetImageIndex: Integer;
+begin
+  Result := CommitImageIndex;
+end;
+
 { TCommit }
 
 function TCommit.AddCallBack(const FileName: string): Boolean;
@@ -271,6 +311,7 @@ begin
     if not HandleSvnException(ExceptObject) then
       raise;
   end;
+  FlushFileState(FileName);
 end;
 
 function TCommit.AddToChangeListCallBack(const FileName, AChangeList: string): Boolean;
@@ -350,8 +391,8 @@ var
   TempStream: IStream;
   Rev: Integer;
   Flag2: TOTADiffFlag;
-  StreamLength: Largeint;
-  Dummy: Largeint;
+  StreamLength: LargeUInt;
+  Dummy: LargeUInt;
 begin
   SvnItem := TSvnItem.Create(FSvnClient, nil, FileName, False, False, True);
   try
@@ -512,6 +553,8 @@ var
   URL: string;
 begin
   FSvnCommitFrame := TSvnCommitFrame(AFrame);
+  if IDEClient.Options.AlternativeCommitLayout then
+    FSvnCommitFrame.EnableAlternativeLayout;
   Cursor := Screen.Cursor;
   Screen.Cursor := crHourGlass;
   Application.ProcessMessages;
@@ -659,6 +702,7 @@ begin
     if not HandleSvnException(ExceptObject) then
       raise;
   end;
+  FlushFileState(FileName);
 end;
 
 function TCommit.RevertCallBack(const FileName: string; ARecursive: Boolean; var ANewTextStatus: TSvnWCStatusKind): Boolean;
@@ -691,6 +735,7 @@ begin
   Module := (BorlandIDEServices as IOTAModuleServices).FindModule(FileName);
   if Module <> nil then
     Module.Refresh(True);
+  FlushFileState(FileName);
 end;
 
 procedure TCommit.SelectView;
@@ -769,6 +814,7 @@ begin
     else
       raise;
   end;
+  FlushFileListFileStates(CommitList);
 end;
 
 procedure LoadRecentComments(const RecentComments: TStringList);

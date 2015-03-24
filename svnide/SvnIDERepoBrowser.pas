@@ -47,6 +47,8 @@ type
   end;
 
   TParentRepoSvnMenu = class(TSvnMenu)
+  protected
+    function GetImageIndex: Integer; override;
   public
     constructor Create;
   end;
@@ -64,6 +66,14 @@ type
   TFileRepoSvnMenu = class(TBaseRepoSvnMenu)
   protected
     procedure Execute(const MenuContextList: IInterfaceList); override;
+    function GetImageIndex: Integer; override;
+  public
+    constructor Create(ASvnIDEClient: TSvnIDEClient);
+  end;
+
+  TDirRepoSvnMenu = class(TBaseRepoSvnMenu)
+  protected
+    function GetImageIndex: Integer; override;
   public
     constructor Create(ASvnIDEClient: TSvnIDEClient);
   end;
@@ -71,13 +81,14 @@ type
 implementation
 
 uses ToolsApi, SysUtils, SvnIDEConst, SvnClient, SvnClientRepoBrowserFrame,
-  DesignIntf, Forms, SvnIDEUtils, SvnUITypes;
+  DesignIntf, Forms, SvnIDEUtils, SvnUITypes, SvnIDEIcons;
 
 const
   sPMVRepoParent = 'SvnRepoParent';
   sPMVRootDirRepo = 'SvnRootDirRepo';
   sPMVProjectDirRepo = 'SvnProjectDirRepo';
   sPMVFileRepo = 'SvnFileRepo';
+  sPMVDirRepo = 'SvnDirRepo';
 
 var
   RepoView: INTACustomEditorView;
@@ -132,6 +143,9 @@ begin
     if FRootType = rtProjectDir then
       RootPath := ExtractFilePath(MenuContext.Ident)
     else
+    if FRootType = rtDir then
+      RootPath := IncludeTrailingPathDelimiter(MenuContext.Ident)
+    else
       RootPath := '';
     RepoView := TRepoView.Create(FSvnIDEClient.SvnClient, RootPath);
     (BorlandIDEServices as IOTAEditorViewServices).ShowEditorView(RepoView);
@@ -148,6 +162,11 @@ begin
   FParent := sPMVSvnParent;
   FPosition := pmmpParentRepoSvnMenu;
   FHelpContext := 0;
+end;
+
+function TParentRepoSvnMenu.GetImageIndex: Integer;
+begin
+  Result := RepoBrowserImageIndex;
 end;
 
 { TRootDirRepoSvnMenu }
@@ -198,6 +217,29 @@ begin
       (BorlandIDEServices as IOTAEditorViewServices).ShowEditorView(RepoView);
     end;
   end;
+end;
+
+function TFileRepoSvnMenu.GetImageIndex: Integer;
+begin
+  Result := RepoBrowserImageIndex;
+end;
+
+{ TDirRepoSvnMenu }
+
+constructor TDirRepoSvnMenu.Create(ASvnIDEClient: TSvnIDEClient);
+begin
+  inherited Create(ASvnIDEClient);
+  FRootType := rtDir;
+  FParent := sPMVSvnParent;
+  FCaption := sPMMRepo;
+  FVerb := sPMVDirRepo;
+  FPosition := pmmpProjectDirRepoSvnMenu;
+  FHelpContext := 0;
+end;
+
+function TDirRepoSvnMenu.GetImageIndex: Integer;
+begin
+  Result := RepoBrowserImageIndex;
 end;
 
 { TRepoView }

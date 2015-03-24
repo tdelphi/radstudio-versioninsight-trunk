@@ -71,6 +71,7 @@ uses
   ComObj, ShellAPI;
 
 {$R *.dfm}
+{.$R ..\resources\subversion.res}
 
 // TDataSvnImages private
 

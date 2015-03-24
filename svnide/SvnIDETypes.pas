@@ -527,7 +527,7 @@ begin
       [cFileNameTagOpenStr + FileName + cFileNameTagCloseStr, FFiles[I].Revision1]));
     MemStream := TMemoryStream.Create;
     FFiles[I].Stream1 := TStreamAdapter.Create(MemStream, soOwned);
-    IDEClient.SvnClient.SaveFileContentToStream(FFiles[I].FileName, FFiles[I].Revision1, MemStream);
+    IDEClient.SvnClient.SaveFileContentToStream(FileName, FFiles[I].Revision1, MemStream);
     UpdateProgress(I * 2 + 1, FFiles.Count * 2);
     if FAborted then
       Break;
@@ -535,7 +535,7 @@ begin
       [cFileNameTagOpenStr + FileName + cFileNameTagCloseStr, FFiles[I].Revision2]));
     MemStream := TMemoryStream.Create;
     FFiles[I].Stream2 := TStreamAdapter.Create(MemStream, soOwned);
-    IDEClient.SvnClient.SaveFileContentToStream(FFiles[I].FileName, FFiles[I].Revision2, MemStream);
+    IDEClient.SvnClient.SaveFileContentToStream(FileName, FFiles[I].Revision2, MemStream);
     UpdateProgress(I * 2 + 2, FFiles.Count * 2);
     if FAborted then
       Break;
@@ -546,14 +546,16 @@ end;
 procedure TCompareRevisionThread.SyncCallCompare;
 var
   I: Integer;
+  FileName: string;
 begin
   FSvnProgressDialog.Free;
   if not FAborted then
     for I := 0 to FFiles.Count - 1 do
     begin
+      FileName := FFiles[I].FileName.Replace('/', '\');
       (BorlandIDEServices as IOTACustomDifferenceManager).
-        ShowDifference(FFiles[I].Stream1, FFiles[I].Stream2, FFiles[I].FileName + '-' + IntToStr(FFiles[I].Revision1),
-          FFiles[I].FileName  + '-' + IntToStr(FFiles[I].Revision2), '', '', dfOTARevision, dfOTARevision, dtOTADefault);
+        ShowDifference(FFiles[I].Stream1, FFiles[I].Stream2, FileName + '-' + IntToStr(FFiles[I].Revision1),
+          FileName  + '-' + IntToStr(FFiles[I].Revision2), FileName, FileName, dfOTARevision, dfOTARevision, dtOTADefault);
       FFiles[I].Stream1 := nil;
       FFiles[I].Stream2 := nil;
     end;

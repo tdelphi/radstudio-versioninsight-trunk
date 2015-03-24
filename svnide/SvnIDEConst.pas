@@ -54,6 +54,8 @@ resourcestring
   sPMMMerge = 'Merge';
   sPMMRevert = 'Revert';
   sPMMSwitch = 'Switch';
+  sMenuAddToVersionControl = 'Subversion Import';
+  sMenuOpenFromVersionControl = 'Open From Subversion (Checkout)';
 
   sCommit = 'Commit';
   sUpdated = 'Updated';
@@ -76,6 +78,13 @@ resourcestring
   sSwitchDialogCaption = '%s - Switch';
   sRetrievingFileRevision = 'Retrieving %s revision %d';
   sSavingFileRevision = 'Saving %s revision %d';
+
+
+const
+  // Context Ids reserved in Context.pas file
+  { 15201 - 15400 For Subversion Integeration}
+  hcIdSvnOptions = 15212;
+
 
 implementation
 

@@ -113,8 +113,39 @@ resourcestring
   sWcNotifyStateMerged = 'Merged';
   sWcNotifyStateConflicted = 'Conflicted';
 
+  //Subversion 1.7 and higher
+  sWcNotifyUpdateStarted = 'Update Started';
+  sWcNotifyUpdateSkipObstruction = 'Update Skip Obstruction';
+  sWcNotifyUpdateSkipWorkingOnly = 'Update Skip Working Only';
+  sWcNotifyUpdateSkipAccessDenied = 'Update Skip Acces Denied';
+  sWcNotifyUpdateExternalRemoved = 'Update External Removed';
+  sWcNotifyUpdateShadowedAdd = 'Update shadowed Add';
+  sWcNotifyUpdateShadowedUpdate = 'Update Shadowed Update';
+  sWcNotifyUpdateShadowedDelete = 'Update Shadowed Delete';
+  sWcNotifyMergeRecordInfo = 'Merge Record Info';
+  sWcNotifyUpgradedPath = 'Upgraded Path';
+  sWcNotifyMergeRecordInfoBegin = 'Merge Record Info Begin';
+  sWcNotifyMergeElideInfo = 'Merge Elide Info';
+  sWcNotifyPatch = 'Patch';
+  sWcNotifyPatchAppliedHunk = 'Patch Applied Hunk';
+  sWcNotifyPatchRejectedHunk = 'Patch Rejected Hunk';
+  sWcNotifyPatchHunkAlreadyApplied = 'Patch Hunk Already Applied';
+  sWcNotifyCommitCopied = 'Commit Copied';
+  sWcNotifyCommitCopiedReplaced = 'Commit Copied Replaced';
+  sWcNotifyUrlRedirect = 'Url Redirect';
+  sWcNotifyPathNonexistent = 'Path Nonexistent';
+  sWcNotifyExclude = 'Exclude';
+  sWcNotifyFailedConflict = 'Failed Conflict';
+  sWcNotifyFailedMissing = 'Failed Missing';
+  sWcNotifyFailedOutOfDate = 'Failed Out Of Date';
+  sWcNotifyFailedNoParent = 'Failed No Parent';
+  sWcNotifyFailedLocked = 'Failed Locked';
+  sWcNotifyFailedForbiddenbyServer = 'Failed Forbidden by Server';
+  sWcNotifySkipConflicted = 'Skip Conflicted';
 
   sCancelledByUser = 'Cancelled by user';
+
+  {$I ..\delphisvn.inc}
 
 implementation
 

@@ -34,13 +34,13 @@ unit SvnIDECheckout;
 
 interface
 
-uses svn_client;
+uses svn_client, SvnIdeClient, Dialogs;
 
 function DoCheckOutProject(var ProjectName: string; const Connection: string = ''): Boolean;
 
 implementation
 
-uses SvnClient, SvnIdeClient, SvnClientCheckout, SvnIDEMessageView, ToolsApi,
+uses SvnClient, SvnClientCheckout, SvnIDEMessageView, ToolsApi,
   Classes, SvnClientProjectSelect, SysUtils, SvnClientRepoBrowserDialog,
   SvnClientUpdate, Generics.Collections, SvnIDEConst, Graphics;
 
@@ -77,6 +77,9 @@ type
     destructor Destroy; override;
   end;
 
+resourcestring
+  sInvalidUrl = 'Invalid url';
+
 function DoCheckout(const PathName, TargetDir: string; Recurse: Boolean;
   IgnoreExternals: Boolean; Revision: TSvnRevNum; const ProjectName: string): string;
 begin
@@ -99,6 +102,35 @@ var
   InitalDirectory: string;
   URLHistory: TStringList;
   Loc: Integer;
+
+  procedure FormatUrl;
+  var
+    I: Integer;
+    StrList: TStringList;
+    RootURLIndx: Integer;
+  begin
+    StrList := TStringList.Create;
+    try
+      StrList.StrictDelimiter := True;
+      StrList.Delimiter := '/';
+      StrList.DelimitedText := PathName;
+      RootURLIndx := StrList.IndexOf('svn');
+      if RootURLIndx = -1 then
+        RootURLIndx := StrList.IndexOf('svnroot');
+      for I := 0 to StrList.Count -1 do
+      begin
+        if StrList[I] = '' then Continue;
+        if I = 0 then
+          PathName := StrList[I] + '//'
+        else if I <= RootURLIndx then
+          PathName := PathName + LowerCase(StrList[I]) + StrList.Delimiter
+        else
+          PathName := PathName + StrList[I] + StrList.Delimiter;
+      end;
+    finally
+      StrList.Free;
+    end;
+  end;
 begin
   InitalDirectory := (BorlandIDEServices as IOTAServices).GetStartupDirectory;
   URLHistory := TStringList.Create;
@@ -120,8 +152,18 @@ begin
     URLHistory.Free;
   end;
   if Result then
+  begin
+    if IDEClient.SvnClient.SvnPathIsUrl(PathName) then
+    begin
+      FormatUrl;
+      if PathName[PathName.Length] = '/' then
+        PathName := Copy(PathName, 0, PathName.Length -1);
     ProjectName := DoCheckout(PathName, TargetDir, Recurse, IgnoreExternals,
       Revision, ProjectName);
+    end
+    else
+      MessageDlg(sInvalidUrl, mtError, [mbOk], 0);
+  end;
 end;
 
 { TCheckoutThread }

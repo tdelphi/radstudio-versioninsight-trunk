@@ -34,7 +34,11 @@ unit SvnIDEMessageView;
 
 interface
 
-uses ToolsApi, svn_client;
+uses
+  {$IFDEF TOOLSPROAPI}
+  ToolsProAPI,
+  {$ENDIF TOOLSPROAPI}
+  ToolsApi, svn_client;
 
 type
   TSvnMessageView = class(TInterfacedObject, IOTAMessageNotifier)
@@ -96,7 +100,7 @@ var
 
 implementation
 
-uses SysUtils, SvnClient, SvnIDEConst;
+uses SysUtils, SvnClient, SvnIDEConst, SvnIDEIcons;
 
 { TSvnMessage }
 
@@ -189,6 +193,11 @@ begin
     FMessageGroup := (BorlandIDEServices as IOTAMessageServices).GetGroup(sSubversion);
     if not Assigned(FMessageGroup) then
     begin
+      {$IFDEF TOOLSPROAPI}
+      if Supports(BorlandIDEServices, IOTAProMessageServices) then
+        FMessageGroup := (BorlandIDEServices as IOTAProMessageServices).AddMessageGroup(sSubversion, SubversionMessageViewImageIndex)
+      else
+      {$ENDIF TOOLSPROAPI}
       FMessageGroup := (BorlandIDEServices as IOTAMessageServices).AddMessageGroup(sSubversion);
       FMessageGroup.AutoScroll := True;
     end;

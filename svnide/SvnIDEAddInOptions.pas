@@ -68,6 +68,8 @@ begin
     Colors[ssckModified] := FFrame.cboxModified.Selected;
     IDEClient.Colors.Colors := Colors;
     IDEClient.Colors.Save;
+    IDEClient.Options.AlternativeCommitLayout := FFrame.cbAlternativeCommitLayout.Checked;
+    IDEClient.Options.ClearFileStatesAfterCloseAll := FFrame.cbClearFileStatesAfterCloseAll.Checked;
     IDEClient.Options.DeleteBackupFilesAfterCommit := FFrame.cbDeleteBackupFilesAfterCommit.Checked;
     IDEClient.Options.KeepCommitViewOpenAfterCommit := FFrame.cbKeepCommitViewOpenAfterCommit.Checked;
     IDEClient.Options.BlameOptions.IgnoreEOL := FFrame.IgnoreEOL.Checked;
@@ -87,6 +89,11 @@ begin
   FFrame.cboxDeleted.Selected := IDEClient.Colors.Colors[ssckDeleted];
   FFrame.cboxMerged.Selected := IDEClient.Colors.Colors[ssckMerged];
   FFrame.cboxModified.Selected := IDEClient.Colors.Colors[ssckModified];
+  FFrame.cbAlternativeCommitLayout.Checked := IDEClient.Options.AlternativeCommitLayout;
+  {$IFNDEF TOOLSPROAPI}
+  FFrame.cbClearFileStatesAfterCloseAll.Visible := False;
+  {$ENDIF ~TOOLSPROAPI}
+  FFrame.cbClearFileStatesAfterCloseAll.Checked := IDEClient.Options.ClearFileStatesAfterCloseAll;
   FFrame.cbDeleteBackupFilesAfterCommit.Checked := IDEClient.Options.DeleteBackupFilesAfterCommit;
   FFrame.cbKeepCommitViewOpenAfterCommit.Checked := IDEClient.Options.KeepCommitViewOpenAfterCommit;
   FFrame.IgnoreEOL.Checked := IDEClient.Options.BlameOptions.IgnoreEOL;
@@ -116,7 +123,7 @@ end;
 
 function TSvnAddInOptions.GetHelpContext: Integer;
 begin
-  Result := 0;
+  Result := hcIdSvnOptions;
 end;
 
 function TSvnAddInOptions.IncludeInIDEInsight: Boolean;

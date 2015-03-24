@@ -47,6 +47,8 @@ type
   end;
 
   TParentLogSvnMenu = class(TSvnMenu)
+  protected
+    function GetImageIndex: Integer; override;
   public
     constructor Create;
   end;
@@ -61,12 +63,20 @@ type
     constructor Create(ASvnIDEClient: TSvnIDEClient);
   end;
 
+  TDirLogSvnMenu = class(TBaseLogSvnMenu)
+  protected
+    function GetImageIndex: Integer; override;
+  public
+    constructor Create(ASvnIDEClient: TSvnIDEClient);
+  end;
+
  procedure Register;
 
 implementation
 
 uses SysUtils, SvnIDEConst, ToolsApi, SvnClientLog, SvnClient, DesignIntf, Forms,
-  SvnUITypes, SvnIDEUtils, ExtCtrls, Graphics, SvnIDETypes, RegularExpressions;
+  SvnUITypes, SvnIDEUtils, ExtCtrls, Graphics, SvnIDETypes, RegularExpressions,
+  SvnIDEIcons;
 
 const
   sPMVLogParent = 'SvnLogParent';
@@ -74,6 +84,7 @@ const
   sPMVRootDirLog = 'RootDirLog';
   sPMVProjectDirLog = 'ProjectDirLog';
   sPMVExpicitFilesLog = 'ExpicitFilesLog';
+  sPMVDirLog = 'DirLog';
 
 var
   LogView: INTACustomEditorView;
@@ -170,6 +181,9 @@ begin
     if FRootType = rtProjectDir then
       RootPath := ExtractFilePath(MenuContext.Ident)
     else
+    if FRootType = rtDir then
+      RootPath := IncludeTrailingPathDelimiter(MenuContext.Ident)
+    else
       RootPath := '';
     //TODO: check if path is not empty and is versioned
     //TODO: check if there is already a Log view
@@ -189,6 +203,11 @@ begin
   FParent := sPMVSvnParent;
   FPosition := pmmpParentLogSvnMenu;
   FHelpContext := 0;
+end;
+
+function TParentLogSvnMenu.GetImageIndex: Integer;
+begin
+  Result := LogImageIndex;
 end;
 
 { TRootDirLogSvnMenu }
@@ -213,6 +232,24 @@ begin
   FVerb := sPMVProjectDirLog;
   FPosition := pmmpProjectDirLogSvnMenu;
   FHelpContext := 0;
+end;
+
+{ TDirLogSvnMenu }
+
+constructor TDirLogSvnMenu.Create(ASvnIDEClient: TSvnIDEClient);
+begin
+  inherited Create(ASvnIDEClient);
+  FRootType := rtDir;
+  FParent := sPMVSvnParent;
+  FCaption := sPMMLog;
+  FVerb := sPMVDirLog;
+  FPosition := pmmpProjectDirLogSvnMenu;
+  FHelpContext := 0;
+end;
+
+function TDirLogSvnMenu.GetImageIndex: Integer;
+begin
+  Result := LogImageIndex;
 end;
 
 { TSvnURLToFileNameTranslator }

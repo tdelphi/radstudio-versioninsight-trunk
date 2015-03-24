@@ -1,6 +1,7 @@
 object dlgRepoBrowser: TdlgRepoBrowser
   Left = 0
   Top = 0
+  HelpContext = 15213
   BorderIcons = [biSystemMenu]
   Caption = 'Repo Browser'
   ClientHeight = 328

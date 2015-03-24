@@ -101,15 +101,15 @@ object SvnSwitchDialog: TSvnSwitchDialog
     object SelectRevision: TEdit
       Left = 8
       Top = 62
-      Width = 139
+      Width = 97
       Height = 21
       Enabled = False
       TabOrder = 1
     end
     object btnURLLog: TButton
-      Left = 167
+      Left = 111
       Top = 58
-      Width = 79
+      Width = 138
       Height = 25
       Anchors = [akTop, akRight]
       Caption = 'Show &Log'
@@ -131,7 +131,7 @@ object SvnSwitchDialog: TSvnSwitchDialog
     object DepthSticky: TCheckBox
       Left = 8
       Top = 48
-      Width = 105
+      Width = 209
       Height = 17
       Caption = '&Make depth sticky'
       TabOrder = 0
@@ -139,7 +139,7 @@ object SvnSwitchDialog: TSvnSwitchDialog
     object OmitExternals: TCheckBox
       Left = 8
       Top = 71
-      Width = 129
+      Width = 209
       Height = 17
       Caption = 'Omit E&xternals'
       TabOrder = 1
@@ -164,9 +164,9 @@ object SvnSwitchDialog: TSvnSwitchDialog
     end
   end
   object URL: TComboBox
-    Left = 55
+    Left = 104
     Top = 52
-    Width = 447
+    Width = 398
     Height = 21
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 2

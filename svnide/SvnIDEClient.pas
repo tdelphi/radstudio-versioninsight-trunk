@@ -45,7 +45,9 @@ uses SvnClient, svn_client, Classes, SysUtils, SvnIDEColors;
 type
   TSvnOptions = class(TObject)
   private
+    FAlternativeCommitLayout: Boolean;
     FBlameOptions: TSvnBlameOptions;
+    FClearFileStatesAfterCloseAll: Boolean;
     FDeleteBackupFilesAfterCommit: Boolean;
     FKeepCommitViewOpenAfterCommit: Boolean;
   public
@@ -53,7 +55,9 @@ type
     destructor Destroy; override;
     procedure Load;
     procedure Save;
+    property AlternativeCommitLayout: Boolean read FAlternativeCommitLayout write FAlternativeCommitLayout;
     property BlameOptions: TSvnBlameOptions read FBlameOptions;
+    property ClearFileStatesAfterCloseAll: Boolean read FClearFileStatesAfterCloseAll write FClearFileStatesAfterCloseAll;
     property DeleteBackupFilesAfterCommit: Boolean read FDeleteBackupFilesAfterCommit write FDeleteBackupFilesAfterCommit;
     property KeepCommitViewOpenAfterCommit: Boolean read FKeepCommitViewOpenAfterCommit write FKeepCommitViewOpenAfterCommit;
   end;
@@ -115,13 +119,16 @@ implementation
 uses ToolsApi, FileHistoryApi, Controls, Forms, Dialogs,
   SvnClientLoginPrompt, SvnClientSSLClientCertPrompt, SvnIDEMenus,
   SvnClientSSLServerTrustPrompt, SvnIDEHistory, SvnImages, SvnIDEConst,
-  Registry, SvnIDENotifier, SvnIDEClean, SvnIDEAddInOptions;
+  Registry, SvnIDENotifier, SvnIDEClean, SvnIDEAddInOptions, SvnIDEIcons,
+  SvnIDEFileStates;
 
 const
  sURLHistory = 'URLHistory';
  sUrlHistoryItem = 'URLHistory%d';
  MaxURLHistory = 20;
  cOptions = 'Options';
+ cAlternativeCommitLayout = 'AlternativeCommitLayout';
+ cClearFileStatesAfterCloseAll = 'ClearFileStatesAfterCloseAll';
  cDeleteBackupFilesAfterCommit = 'DeleteBackupFilesAfterCommit';
  cKeepCommitViewOpenAfterCommit = 'KeepCommitViewOpenAfterCommit';
  cBlameIgnoreEOL = 'BlameIgnoreEOL';
@@ -172,6 +179,8 @@ begin
   RegisterMenus(IDEClient);
   RegisterFileNotification;
   RegisterAddInOptions;
+  RegisterImages;
+  RegisterFileStateProvider;
 end;
 
 { TSvnOptions }
@@ -179,7 +188,9 @@ end;
 constructor TSvnOptions.Create;
 begin
   inherited Create;
+  FAlternativeCommitLayout := False;
   FBlameOptions := TSvnBlameOptions.Create;
+  FClearFileStatesAfterCloseAll := False;
   FDeleteBackupFilesAfterCommit := False;
   FKeepCommitViewOpenAfterCommit := False;
   Load;
@@ -203,6 +214,12 @@ begin
     if not Reg.KeyExists(BaseKey) then
       Exit;
     Reg.OpenKeyReadOnly(BaseKey);
+    Key := cAlternativeCommitLayout;
+    if Reg.ValueExists(Key) then
+      FAlternativeCommitLayout := Reg.ReadBool(Key);
+    Key := cClearFileStatesAfterCloseAll;
+    if Reg.ValueExists(Key) then
+      FClearFileStatesAfterCloseAll := Reg.ReadBool(Key);
     Key := cDeleteBackupFilesAfterCommit;
     if Reg.ValueExists(Key) then
       FDeleteBackupFilesAfterCommit := Reg.ReadBool(Key);
@@ -235,6 +252,8 @@ begin
   try
     BaseKey := BaseRegKey + cOptions;
     Reg.OpenKey(BaseKey, True);
+    Reg.WriteBool(cAlternativeCommitLayout, FAlternativeCommitLayout);
+    Reg.WriteBool(cClearFileStatesAfterCloseAll, FClearFileStatesAfterCloseAll);
     Reg.WriteBool(cDeleteBackupFilesAfterCommit, FDeleteBackupFilesAfterCommit);
     Reg.WriteBool(cKeepCommitViewOpenAfterCommit, FKeepCommitViewOpenAfterCommit);
 
@@ -568,6 +587,7 @@ end;
 
 initialization
 finalization
+  UnregisterFileStateProvider;
   UnRegisterMenus;
   IDEClient.Free;
 
